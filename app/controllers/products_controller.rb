@@ -1,7 +1,7 @@
 class ProductsController < ApplicationController
 
   def index
-    render json: (Product.all).to_json
+    render json: (Product.all).as_json
   end
 
   def show
@@ -9,7 +9,7 @@ class ProductsController < ApplicationController
     if (Product.find_by(id: productID) == nil)
       render json: {Error_Message: "No product by that id"}
     else
-      render json: (Product.find_by(id: productID)).to_json
+      render json: (Product.find_by(id: productID)).as_json
     end
   end
 
