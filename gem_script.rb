@@ -41,6 +41,8 @@ elsif input_option == "4"
     params["title"] = gets.chomp
     puts "Enter a new description"
     params["descrption"] = gets.chomp
+    puts "Enter a new price"
+    params["price"] = gets.chomp.to_f
     response = Unirest.patch("http://localhost:3000/products/#{params['id']}", parameters: params)
     puts JSON.pretty_generate(response.body)
 

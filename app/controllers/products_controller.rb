@@ -14,17 +14,25 @@ class ProductsController < ApplicationController
   end
 
   def create
-    product = Product.create(title: params[:title], price: params[:price], string: params[:string], image_url:params[:image_url], description: params[:description])
-    render json: product.as_json
+    product = Product.new(title: params[:title], price: params[:price], string: params[:string], image_url:params[:image_url], description: params[:description])
+    if product.save
+      render json: product.as_json
+    else
+      render json: {error: product.errors.full_messages, status: :unprocessable_entity}
+    end
   end
 
   def update
     product = Product.find_by(id: params[:id])
-    product.update(
+    if product.update(
       title: params[:title],
-      description: params[:description]
+      description: params[:description],
+      price: params[:price]
       )
-    render json: product.as_json
+      render json: product.as_json
+    else
+      render json: {error: product.errors.full_messages, status: :unprocessable_entity}
+    end
   end
 
   def destroy 
