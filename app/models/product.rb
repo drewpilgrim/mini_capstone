@@ -1,4 +1,6 @@
 class Product < ApplicationRecord
+  belongs_to :supplier
+  has_many :orders
 
   validates :title, presence: true
   validates :title, uniqueness: true
@@ -35,7 +37,8 @@ class Product < ApplicationRecord
       description: description, 
       price: price,
       tax: tax,
-      total_price: total
+      total_price: total,
+      supplier: supplier.as_json
     }
   end
 

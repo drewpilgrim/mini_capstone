@@ -1,7 +1,22 @@
 class ProductsController < ApplicationController
-
+  before_action :authenticate_admin, execpt: [:index, :show]
+  
   def index
-    render json: (Product.all).as_json
+    products = Product.all.order(id: :DESC)
+
+    search_term = params[:search]
+    price_sort = params[:price_sort]
+    if search_term 
+      products = products.where("title LIKE ?" ,"%#{search_term}%")
+    end
+    if price_sort == "1"
+      products = products.all.order(price: :ASC)
+    end
+    if price_sort == "2"
+      products = products.all.order(price: :DESC)
+    end
+    render json: products.as_json
+    
   end
 
   def show
@@ -14,24 +29,28 @@ class ProductsController < ApplicationController
   end
 
   def create
-    product = Product.new(title: params[:title], price: params[:price], string: params[:string], image_url:params[:image_url], description: params[:description])
-    if product.save
-      render json: product.as_json
-    else
-      render json: {error: product.errors.full_messages, status: :unprocessable_entity}
+    if current_user.admin
+      product = Product.new(title: params[:title], price: params[:price], string: params[:string], image_url:params[:image_url], description: params[:description])
+      if product.save
+        render json: product.as_json
+      else
+        render json: {error: product.errors.full_messages, status: :unprocessable_entity}
+      end
     end
   end
 
   def update
-    product = Product.find_by(id: params[:id])
-    if product.update(
-      title: params[:title],
-      description: params[:description],
-      price: params[:price]
-      )
-      render json: product.as_json
-    else
-      render json: {error: product.errors.full_messages, status: :unprocessable_entity}
+    if current_user.admin
+      product = Product.find_by(id: params[:id])
+      if product.update(
+        title: params[:title],
+        description: params[:description],
+        price: params[:price]
+        )
+        render json: product.as_json
+      else
+        render json: {error: product.errors.full_messages, status: :unprocessable_entity}
+      end
     end
   end
 
