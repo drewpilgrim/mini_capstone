@@ -23,6 +23,9 @@ while true
   if jwt
     puts "[10] Show Orders for user"
   end
+
+  puts "[11] Show all categories"
+  puts "[12] Show all products from a particular category"
   puts "[q] Quit"
 
   input_option = gets.chomp
@@ -114,6 +117,14 @@ while true
     response = Unirest.get("http://localhost:3000/orders")
     puts JSON.pretty_generate(response.body)
 
+  elsif input_option == "11"
+    response = Unirest.get("http://localhost:3000/categories")
+    puts JSON.pretty_generate(response.body)
+  elsif input_option == "12"
+    puts "Please enter an ID for the category you want to search for"
+    cat_id = gets.chomp
+    response = Unirest.get("http://localhost:3000/categories/#{cat_id}")
+    puts JSON.pretty_generate(response.body)
   elsif input_option == "q"
     break
   end

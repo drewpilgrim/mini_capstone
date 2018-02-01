@@ -1,0 +1,12 @@
+class Category < ApplicationRecord
+    has_many :category_products
+    has_many :products, through: :category_products
+
+
+    def as_json
+      {
+        title: title
+      }
+
+    end
+end
