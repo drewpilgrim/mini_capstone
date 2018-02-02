@@ -3,7 +3,10 @@ class Product < ApplicationRecord
   has_many :orders
   has_many :category_products
   has_many :categories, through: :category_products
-
+  has_many :category_products
+  has_many :user, through: :category_products
+  has_many :orders, through: :category_products
+  
   validates :title, presence: true
   validates :title, uniqueness: true
   validates :description, length: {in: 5..500}

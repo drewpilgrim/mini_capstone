@@ -6,11 +6,11 @@ while true
   system "clear"
   response = Unirest.get("http://localhost:3000/users/admin")
   admin = response.body["admin"]
+  puts "Welcome to the Product app! Select an option:"
   if jwt
     puts "[1] See all products"
     puts "[2] See one product"
   end
-  puts "Welcome to the Product app! Select an option:"
   if admin == "true"
     puts "[3] Create a product"
     puts "[4] Update a product"
@@ -26,6 +26,11 @@ while true
 
   puts "[11] Show all categories"
   puts "[12] Show all products from a particular category"
+
+  if jwt 
+    puts "[13] Cart a product"
+    puts "[14] Show all products"
+  end
   puts "[q] Quit"
 
   input_option = gets.chomp
@@ -125,6 +130,19 @@ while true
     cat_id = gets.chomp
     response = Unirest.get("http://localhost:3000/categories/#{cat_id}")
     puts JSON.pretty_generate(response.body)
+  elsif input_option == "13"
+    params = {}
+    puts "Enter Product id"
+    params["product_id"] = gets.chomp
+    puts "Enter Quantity"
+    params["quantity"] = gets.chomp
+
+    response = Unirest.post("http://localhost:3000/carted_products", parameters: params)
+    puts JSON.pretty_generate(response.body)
+  elsif input_option == "14"
+    response = Unirest.get("http://localhost:3000/carted_products")
+    puts JSON.pretty_generate(response.body)
+    
   elsif input_option == "q"
     break
   end
