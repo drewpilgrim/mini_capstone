@@ -31,6 +31,7 @@ while true
     puts "[13] Cart a product"
     puts "[14] Show all products"
   end
+  puts "[15] Get Information from Food To Fork"
   puts "[q] Quit"
 
   input_option = gets.chomp
@@ -111,10 +112,6 @@ while true
     params = {}
     puts "User ID"
     params["user_id"] = gets.chomp
-    puts "Product ID"
-    params["product_id"] = gets.chomp
-    puts "Quantity"
-    params["quantity"] = gets.chomp
     response = Unirest.post("http://localhost:3000/orders", parameters: params)
     puts JSON.pretty_generate(response.body)
 

@@ -12,18 +12,25 @@ class OrdersController < ApplicationController
 
   def create 
     order = Order.new(
-      product_id: params[:product_id],
-      user_id: params[:user_id],
-      quantity: params[:quantity]
+      user_id: current_user.id,
       )
-    order.subtotal = order.product.price * order.quantity
-    order.tax = order.product.tax * order.quantity
-    order.total = order.product.total * order.quantity
+    c_products = current_user.carted_products.where(status: "Carted")
+    # order.subtotal = c_products.reduce {|acc, el| (acc.subtotal * acc.quantity) + (el.subtotal * el.quantity)}
+    # order.tax = c_products.reduce {|acc, el| (acc.tax * acc.quantity) + (el.tax * el.quantity)}
+    # order.total = c_products.reduce {|acc, el| (acc.total * acc.quantity) + (el.total * el.quantity)}
+    subtotal = 0
+    c_products.each do |c_product|
+      subtotal += (c_product.product.price * product.quantity)
+    end
+    order.subtotal = subtotal
+    order.tax = subtotal * 0.09
+    order.total = subtotal + order.tax
 
     if order.save
-      render json: {Message: "Order succesful"}, status: :created
+      carted_products.update_all(status: "Purchased", order_id: order.id)
+      render json: {Message: "Order succesful #{order.subtotal}, #{order.tax}, #{order.toal}", }, status: :created
     else
-      render json: {Error: user.errors.full_messages}, status: :bad_request
+      render json: {Error: order.errors.full_messages}, status: :bad_request
     end
 
 
