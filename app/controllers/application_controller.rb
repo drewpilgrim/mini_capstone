@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
 
 
   def authenticate_admin
-    unless current_user.admin
+    unless current_user && current_user.admin
       render json: {message: "Error, user is not an admin"}
     end
 
